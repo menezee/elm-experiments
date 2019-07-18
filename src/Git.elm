@@ -31,7 +31,7 @@ main =
 --    }
 
 type alias Issue =
-  { title : String, url : String }
+  { title : String, url : String, avatar_url : String }
 
 type alias Issues = List Issue
 
@@ -81,7 +81,7 @@ getIssues =
 
 issueDecoder : D.Decoder Issue
 issueDecoder =
-  D.map2 Issue (D.field "title" D.string) (D.field "url" D.string)
+  D.map3 Issue (D.field "title" D.string) (D.field "url" D.string) (D.field "user" (D.field "avatar_url" D.string))
 
 issueListDecoder : D.Decoder (List Issue)
 issueListDecoder =
@@ -118,8 +118,10 @@ issueListView model =
 
 issueItem : Issue -> Html Msg
 issueItem issue =
-  li []
-    [ a [ href issue.url ] [ text issue.title ] ]
+  li [ style "line-height" "40px" ]
+    [ a [ href issue.url ] [ text issue.title ]
+    , img [ style "width" "35px", style "padding-left" "10px", src issue.avatar_url ] []
+    ]
 
 
 -- SUBSCRIPTIONS
