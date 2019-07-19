@@ -1,4 +1,4 @@
-module Main exposing (Issue, Issues, Model(..), Msg(..), getIssues, init, issueDecoder, issueItem, issueListDecoder, issueListView, main, subscriptions, update, view)
+module Main exposing (Issue, Issues, Model(..), Msg(..), getIssues, init, issueDecoder, issueItem, issueListDecoder, issueListView, main, sort, subscriptions, update, view)
 
 import Browser
 import Html exposing (..)
@@ -81,14 +81,14 @@ update msg model =
             ( Ready issues, Cmd.none )
 
         NoOp ->
-            (model, Cmd.none)
+            ( model, Cmd.none )
 
 
 sort : Model -> Msg
 sort model =
     case model of
         Ready issues ->
-          SortedIssues (List.sortBy .title issues)
+            SortedIssues (List.sortBy .title issues)
 
         Loading ->
             NoOp
