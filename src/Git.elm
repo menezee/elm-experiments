@@ -50,7 +50,10 @@ init _ =
 
 type Msg
     = FetchIssues
-    | NewIssues (Result Http.Error (List Issue))
+    | NewIssues (Result Http.Error Issues)
+    | Clear
+    | SortedIssues Issues
+    | NoOp
 
 
 
@@ -70,6 +73,28 @@ update msg model =
 
                 Err _ ->
                     ( Error, Cmd.none )
+
+        Clear ->
+            ( Ready [], Cmd.none )
+
+        SortedIssues issues ->
+            ( Ready issues, Cmd.none )
+
+        NoOp ->
+            (model, Cmd.none)
+
+
+sort : Model -> Msg
+sort model =
+    case model of
+        Ready issues ->
+          SortedIssues (List.sortBy .title issues)
+
+        Loading ->
+            NoOp
+
+        Error ->
+            NoOp
 
 
 
@@ -103,6 +128,8 @@ view model =
     div []
         [ h1 [] [ text "Welcome to Git Issues" ]
         , button [ onClick FetchIssues ] [ text "Fetch Issues" ]
+        , button [ onClick Clear ] [ text "Clear Issues" ]
+        , button [ onClick (sort model) ] [ text "Sort Issues" ]
         , issueListView model
         ]
 
